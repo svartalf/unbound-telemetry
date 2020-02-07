@@ -83,6 +83,11 @@ $ unbound-telemetry shm --help
 in case when exporter is not able to access the `unbound` instance,
 `HTTP 500` error will be returned, response body will contain plain text error description.
 
+## Grafana
+
+[This Grafana dashboard](https://grafana.com/grafana/dashboards/11705) can be used
+to show all metrics provided by this exporter.
+
 ## License
 
 `unbound-telemetry` is released under the MIT License.
