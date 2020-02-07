@@ -1,0 +1,31 @@
+
+[package]
+name = "unbound-telemetry-fuzz"
+version = "0.0.0"
+authors = ["Automatically generated"]
+publish = false
+edition = "2018"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.2"
+
+[dependencies.unbound-telemetry]
+path = ".."
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "fuzz_measurement_observe"
+path = "fuzz_targets/fuzz_measurement_observe.rs"
+
+[[bin]]
+name = "fuzz_text_parser"
+path = "fuzz_targets/fuzz_text_parser.rs"
+
+[patch.crates-io]
+native-tls = { git = "https://github.com/Goirad/rust-native-tls.git", branch = "pkcs8-squashed" }

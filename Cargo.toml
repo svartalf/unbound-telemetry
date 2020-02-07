@@ -1,0 +1,50 @@
+[package]
+name = "unbound-telemetry"
+version = "0.1.0"
+authors = ["svartalf <self@svartalf.info>"]
+description = "Unbound DNS server telemetry exporter"
+keywords = ["unbound", "prometheus", "telemetry", "metrics", "exporter"]
+repository = "https://github.com/svartalf/unbound-telemetry"
+readme = "README.md"
+license = "MIT"
+edition = "2018"
+publish = false
+
+[dependencies]
+log = "^0.4"
+simple_logger = { version = "^1.4", default-features = false }
+structopt = "^0.3"
+tokio = { version = "^0.2", features = ["macros", "signal", "uds", "dns"] }
+tokio-tls = "^0.3"
+hyper = { version = "^0.13", default-features = false, features = ["runtime"] }
+async-trait = "^0.1"
+itoa = "^0.4"
+dtoa = "^0.4"
+native-tls = "^0.2"
+arbitrary = { version = "^0.3", features = ["derive"] }
+
+[target.'cfg(unix)'.dependencies]
+libc = "^0.2"  # Used for shm access
+openssl = "^0.10"
+
+[dev-dependencies]
+approx = "^0.3"
+
+[features]
+# Used for Docker builds only
+vendored = ["openssl/vendored"]
+
+[[bin]]
+name = "unbound-telemetry"
+path = "src/bin/server/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+[profile.bench]
+debug = true
+
+[patch.crates-io]
+# Note: fuzzing crate has the same override
+native-tls = { git = "https://github.com/Goirad/rust-native-tls.git", branch = "pkcs8-squashed" }
