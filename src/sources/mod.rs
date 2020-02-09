@@ -2,17 +2,15 @@ use std::io;
 
 use crate::Statistics;
 
+mod control;
 #[cfg(unix)]
 mod memory;
-mod tls;
-#[cfg(unix)]
-mod uds;
 
 #[cfg(unix)]
-pub use self::memory::SharedMemorySource;
-pub use self::tls::TlsSource;
+pub use self::control::UdsTransport;
+pub use self::control::{RemoteControlSource, TextTransport, TlsTransport};
 #[cfg(unix)]
-pub use self::uds::UdsSource;
+pub use self::memory::SharedMemorySource;
 
 /// Source to fetch `unbound` statistics from.
 ///

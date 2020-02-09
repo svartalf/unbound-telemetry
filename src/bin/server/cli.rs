@@ -39,7 +39,7 @@ pub enum Arguments {
         #[structopt(flatten)]
         common: Common,
     },
-    /// Fetch unbound statistics from the Unix Domain Socket.
+    /// Fetch unbound statistics from the remote control Unix socket.
     ///
     /// Available for UNIX systems only.
     #[cfg(unix)]
@@ -50,37 +50,32 @@ pub enum Arguments {
         #[structopt(flatten)]
         common: Common,
     },
-    /// Fetch unbound statistics from the TLS socket.
-    Tls {
+    /// Fetch unbound statistics from the remote control TCP socket.
+    ///
+    /// Certificate and key options can be omitted
+    /// if TLS is disabled for remote control socket.
+    Tcp {
         /// Server certificate file.
         #[structopt(
             name = "CA_FILE",
             long = "server-cert-file",
-            default_value = "/etc/unbound/unbound_server.pem"
+            requires_all = &["CERT_FILE", "KEY_FILE"]
         )]
-        ca: PathBuf,
+        ca: Option<PathBuf>,
 
         /// Server control certificate file.
-        #[structopt(
-            name = "CERT_FILE",
-            long = "control-cert-file",
-            default_value = "/etc/unbound/unbound_control.pem"
-        )]
-        cert: PathBuf,
+        #[structopt(name = "CERT_FILE", long = "control-cert-file")]
+        cert: Option<PathBuf>,
+
+        /// Control client private key.
+        #[structopt(name = "KEY_FILE", long = "control-key-file")]
+        key: Option<PathBuf>,
 
         /// TLS socket hostname.
         #[structopt(name = "interface", long = "control-interface", default_value = "127.0.0.1:8953")]
         // Note that at this point we are not using `SocketAddr` type,
         // because we might need to do the DNS resolving later.
         interface: String,
-
-        /// Control client private key.
-        #[structopt(
-            name = "KEY_FILE",
-            long = "control-key-file",
-            default_value = "/etc/unbound/unbound_control.key"
-        )]
-        key: PathBuf,
 
         #[structopt(flatten)]
         common: Common,
@@ -94,7 +89,7 @@ impl Arguments {
     // which will be shared among all subcommands.
     pub fn common(&self) -> &Common {
         match self {
-            Arguments::Tls { common, .. } => common,
+            Arguments::Tcp { common, .. } => common,
             #[cfg(unix)]
             Arguments::Shm { common, .. } => common,
             #[cfg(unix)]

@@ -3,22 +3,19 @@
 use std::fs;
 use std::io;
 use std::path::Path;
-use std::str::FromStr;
 
 use native_tls::{Certificate, Identity, TlsConnector as NativeTlsConnector};
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
 use tokio_tls::{TlsConnector, TlsStream};
 
-use super::Source;
-use crate::Statistics;
+use super::RemoteControlTransport;
 
-pub struct TlsSource {
+pub struct TlsTransport {
     connector: TlsConnector,
     host: String,
 }
 
-impl TlsSource {
+impl TlsTransport {
     pub fn new(ca: impl AsRef<Path>, cert: impl AsRef<Path>, key: impl AsRef<Path>, host: String) -> io::Result<Self> {
         let ca = fs::read(ca)?;
         let ca = Certificate::from_pem(&ca).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
@@ -34,13 +31,18 @@ impl TlsSource {
             .build()
             .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
 
-        Ok(TlsSource {
+        Ok(TlsTransport {
             connector: TlsConnector::from(connector),
             host,
         })
     }
+}
 
-    async fn connect(&self) -> io::Result<TlsStream<TcpStream>> {
+#[async_trait::async_trait]
+impl RemoteControlTransport for TlsTransport {
+    type Socket = TlsStream<TcpStream>;
+
+    async fn connect(&self) -> io::Result<Self::Socket> {
         let socket = TcpStream::connect(&self.host).await?;
 
         let stream = self
@@ -50,22 +52,5 @@ impl TlsSource {
             .map_err(|e| io::Error::new(io::ErrorKind::ConnectionRefused, e))?;
 
         Ok(stream)
-    }
-}
-
-#[async_trait::async_trait]
-impl Source for TlsSource {
-    async fn healthcheck(&self) -> io::Result<()> {
-        self.connect().await.map(|_| ())
-    }
-
-    async fn observe(&self) -> io::Result<Statistics> {
-        let mut socket = self.connect().await?;
-        socket.write_all(b"UBCT1 stats_noreset\n").await?;
-        let mut buffer = String::new();
-
-        socket.read_to_string(&mut buffer).await?;
-
-        Statistics::from_str(&buffer).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
     }
 }

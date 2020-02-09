@@ -5,9 +5,9 @@ use std::time;
 
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Method, Request, Response, Server, StatusCode};
-use unbound_telemetry::{Measurement, Source, TlsSource};
+use unbound_telemetry::{Measurement, RemoteControlSource, Source, TextTransport, TlsTransport};
 #[cfg(unix)]
-use unbound_telemetry::{SharedMemorySource, UdsSource};
+use unbound_telemetry::{SharedMemorySource, UdsTransport};
 
 use crate::cli;
 
@@ -100,18 +100,36 @@ fn render_error<T: Error + std::fmt::Debug>(e: T) -> Body {
 
 fn build_source(config: &cli::Arguments) -> io::Result<Box<dyn Source + Send + Sync + 'static>> {
     let source = match config {
-        cli::Arguments::Tls {
-            ca,
-            cert,
-            key,
+        cli::Arguments::Tcp {
+            ca: Some(ca),
+            cert: Some(cert),
+            key: Some(key),
             interface,
             ..
         } => {
-            let source = TlsSource::new(ca, cert, key, interface.clone())?;
+            let transport = TlsTransport::new(ca, cert, key, interface.clone())?;
+            let source = RemoteControlSource::new(transport);
             Box::new(source) as Box<_>
         }
+        cli::Arguments::Tcp {
+            ca: None,
+            cert: None,
+            key: None,
+            interface,
+            ..
+        } => {
+            let transport = TextTransport::new(interface.clone())?;
+            let source = RemoteControlSource::new(transport);
+
+            Box::new(source) as Box<_>
+        }
+        cli::Arguments::Tcp { .. } => unreachable!("CLI validation should handle this case"),
         #[cfg(unix)]
-        cli::Arguments::Uds { socket, .. } => Box::new(UdsSource::new(socket)) as Box<_>,
+        cli::Arguments::Uds { socket, .. } => {
+            let transport = UdsTransport::new(socket);
+            let source = RemoteControlSource::new(transport);
+            Box::new(source) as Box<_>
+        }
         #[cfg(unix)]
         cli::Arguments::Shm { shm_key, .. } => Box::new(SharedMemorySource::new(*shm_key)) as Box<_>,
     };
