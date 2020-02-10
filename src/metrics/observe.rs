@@ -8,7 +8,6 @@ impl Measurement {
         let mut w = Measurement::with_buffer_capacity(16_834);
 
         // Common
-        w.counter("up", "This Unbound instance is up and running").set(1)?;
         w.gauge("num_threads", "The number of threads to create to serve clients")
             .set(s.threads.len())?;
 

@@ -64,7 +64,9 @@ impl<T> Deref for Segment<T> {
 
 impl<T> Drop for Segment<T> {
     fn drop(&mut self) {
-        let _ = unsafe { libc::shmdt(self.ptr as *const libc::c_void) };
+        let result = unsafe { libc::shmdt(self.ptr as *const libc::c_void) };
+
+        assert_eq!(result, 0, "Unable to detach shared memory segment");
     }
 }
 

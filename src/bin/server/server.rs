@@ -4,7 +4,7 @@ use std::sync::Arc;
 use std::time;
 
 use hyper::service::{make_service_fn, service_fn};
-use hyper::{Body, Method, Request, Response, Server, StatusCode};
+use hyper::{header::HeaderValue, Body, Method, Request, Response, Server, StatusCode};
 use unbound_telemetry::{Measurement, RemoteControlSource, Source, TextTransport, TlsTransport};
 #[cfg(unix)]
 use unbound_telemetry::{SharedMemorySource, UdsTransport};
@@ -23,35 +23,45 @@ async fn handler(req: Request<Body>, context: Arc<Context>) -> hyper::Result<Res
     // see https://github.com/rust-lang/rust/issues/62411#issuecomment-510604193
     #[allow(future_incompatible)]
     match (req.method(), req.uri().path()) {
-        // Index page
+        // Landing page
         (&Method::GET, "/") => Ok(Response::new(Body::from(INDEX_BODY))),
+        // Observing statistics
         (&Method::GET, path) if path == context.config.common().path => {
             let start = time::Instant::now();
             let observation = context.source.observe().await;
             let elapsed = time::Instant::now().duration_since(start);
 
-            let body = observation
+            let mut response = observation
                 .and_then(|statistics| {
                     let mut m = Measurement::observe(statistics)?;
+
+                    // These two metrics are not related directly to the unbound,
+                    // but we want to provide some extra data
+                    m.counter("up", "This Unbound instance is up and running").set(1)?;
                     m.gauge("scrape_duration_seconds", "Time spent on metrics scraping")
                         .set(elapsed)?;
 
                     Ok(m.drain())
                 })
-                .map(Body::from)
+                .map(|body| Response::new(Body::from(body)))
                 .or_else::<hyper::Error, _>(|e| Ok(render_error(e)))
-                .expect("Err variant is excluded by the combinators chain");
+                .unwrap_or_else(|_| unreachable!("Err variant is excluded by the combinators chain"));
 
-            Ok(Response::new(body))
+            response
+                .headers_mut()
+                .insert("Content-Type", HeaderValue::from_static("text/plain"));
+
+            Ok(response)
         }
-        // Healthcheck endpoint
+
+        // Healthcheck
         (method, "/healthcheck") if method == Method::HEAD || method == Method::GET => {
             match context.source.healthcheck().await {
                 Ok(_) => {
                     log::debug!("Health check completed successfully");
                     Ok(Response::new(Body::empty()))
                 }
-                Err(e) => Ok(Response::new(render_error(e))),
+                Err(e) => Ok(render_error(e)),
             }
         }
 
@@ -91,11 +101,14 @@ pub async fn serve(config: cli::Arguments) -> Result<(), Box<dyn Error + Send + 
     Ok(())
 }
 
-fn render_error<T: Error + std::fmt::Debug>(e: T) -> Body {
+fn render_error<T: Error + std::fmt::Debug>(e: T) -> Response<Body> {
     log::error!("Unable to observe unbound statistics: {}", e);
 
-    let body = format!("# Unable to observe unbound statistics: {}", e);
-    Body::from(body)
+    let body = Body::from(format!("# Unable to observe unbound statistics: {}", e));
+    let mut response = Response::new(body);
+    *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
+
+    response
 }
 
 fn build_source(config: &cli::Arguments) -> io::Result<Box<dyn Source + Send + Sync + 'static>> {
