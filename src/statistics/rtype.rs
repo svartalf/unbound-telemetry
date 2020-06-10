@@ -88,5 +88,7 @@ super_enum! {
         Doa => (259, "DOA"),
         Ta => (32768, "TA"),
         Dlv => (32769, "DLV"),
+
+        Other => (std::u64::MAX, "other"),
     }
 }
