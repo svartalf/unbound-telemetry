@@ -23,11 +23,10 @@ This project is developed, manually and automatically tested with Linux.
 Following platforms are tested in the CI environment and expected to work:
 
  * Windows
- * FreeBSD
- * NetBSD
  * macOS
 
-OpenBSD is not tested right now, but it might work also.
+It is expected that FreeBSD, NetBSD and OpenBSD will work too, but
+there are no any manual or automatic checks for them exist.
 
 Note that communication via UDS socket or shared memory is not supported for Windows.
 

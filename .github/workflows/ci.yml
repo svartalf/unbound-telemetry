@@ -12,21 +12,25 @@ jobs:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
+        toolchain:
+          - 1.40.0  # MSRV
+          - stable
+          - nightly
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
           override: true
       - name: Run build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
+        run: cargo build
 
   tier_2:
     name: Tier 2
+    # Allowing to fail for a while, because building OpenSSL is a huge pain
+    continue-on-error: true
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -35,13 +39,18 @@ jobs:
           - x86_64-unknown-netbsd
           # - x86_64-unknown-openbsd
           # - x86_64-unknown-dragonfly
+        toolchain:
+          - 1.40.0  # MSRV
+          - stable
+          - nightly
+
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
           override: true
           target: ${{ matrix.target }}
       - name: Run build
@@ -50,14 +59,14 @@ jobs:
           PKG_CONFIG_ALLOW_CROSS: 1
         with:
           command: check
-          args: --target ${{ matrix.target }}
+          args: --target ${{ matrix.target }} --features vendored
           use-cross: true
 
   lints:
     name: Lints
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Install nightly toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -66,12 +75,6 @@ jobs:
           override: true
           components: rustfmt, clippy
       - name: Run rustfmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args:  --all -- --check
+        run: cargo fmt --all -- --check
       - name: Run clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-targets --all-features -- -D warnings
+        run: cargo clippy --all-targets --all-features -- -D warnings
