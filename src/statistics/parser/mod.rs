@@ -129,20 +129,22 @@ impl Parser {
             "mem.cache.dnscrypt_shared_secret" => stats.cache.dnscrypt_shared_secret.parse(value),
             "mem.cache.dnscrypt_nonce" => stats.cache.dnscrypt_nonce.parse(value),
             "mem.streamwait" => stats.mem_streamwait.parse(value),
+            "num.query.type.other" => stats.query_types_other.parse(value),
             key if key.starts_with("num.query.type.") => {
                 let mut parts = key.rsplitn(2, '.');
                 let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
                 let code = Rtype::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
-                stats.query_types.insert(code, value);
+                let _ = stats.query_types.insert(code, value);
                 Ok(())
             }
+            "num.query.class.other" => stats.query_classes_other.parse(value),
             key if key.starts_with("num.query.class.") => {
                 let mut parts = key.rsplitn(2, '.');
                 let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
                 let code = Class::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
-                stats.query_classes.insert(code, value);
+                let _ = stats.query_classes.insert(code, value);
                 Ok(())
             }
             key if key.starts_with("num.query.opcode.") => {
@@ -150,7 +152,7 @@ impl Parser {
                 let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
                 let code = Opcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
-                stats.query_opcodes.insert(code, value);
+                let _ = stats.query_opcodes.insert(code, value);
                 Ok(())
             }
             "num.query.tcp" => stats.num_query_tcp.parse(value),
@@ -175,7 +177,7 @@ impl Parser {
                 let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
                 let code = Rcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
-                stats.answer_rcodes.insert(code, value);
+                let _ = stats.answer_rcodes.insert(code, value);
                 Ok(())
             }
             "num.query.ratelimited" => stats.num_query_rate_limited.parse(value),
@@ -187,7 +189,7 @@ impl Parser {
                 let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
                 let code = Rcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
-                stats.query_aggressive.insert(code, value);
+                let _ = stats.query_aggressive.insert(code, value);
                 Ok(())
             }
             "unwanted.queries" => stats.num_unwanted_queries.parse(value),
@@ -284,8 +286,8 @@ pub trait DurationExt {
         }
         let nanos = nanos as u128;
         Some(Duration::new(
-            (nanos / (NANOS_PER_SEC as u128)) as u64,
-            (nanos % (NANOS_PER_SEC as u128)) as u32,
+            (nanos / NANOS_PER_SEC) as u64,
+            (nanos % NANOS_PER_SEC) as u32,
         ))
     }
 }

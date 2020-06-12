@@ -1,3 +1,22 @@
+#![deny(
+    unused,
+    unused_imports,
+    unused_features,
+    bare_trait_objects,
+    future_incompatible,
+    nonstandard_style,
+    dead_code,
+    deprecated,
+    intra_doc_link_resolution_failure
+)]
+#![warn(
+    trivial_casts,
+    trivial_numeric_casts,
+    unused_extern_crates,
+    unused_import_braces,
+    unused_results
+)]
+
 #[macro_use]
 mod macros;
 mod metrics;

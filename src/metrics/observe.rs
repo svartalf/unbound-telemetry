@@ -4,7 +4,9 @@ use super::Measurement;
 use crate::statistics::{Bucket, Statistics};
 
 impl Measurement {
+    #[allow(unused_results)]  // `.set` and `.set_with_label` are returning a lot of references.
     pub fn observe(mut s: Statistics) -> io::Result<Self> {
+        // Roughly equal to the response body size plus some extra capacity
         let mut w = Measurement::with_buffer_capacity(16_834);
 
         // Common
