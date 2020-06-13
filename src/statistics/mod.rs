@@ -16,7 +16,7 @@ pub use self::parser::ParseError;
 pub use self::rcode::Rcode;
 pub use self::rtype::Rtype;
 
-/// Statistics shapshot received from some data source.
+/// Statistics snapshot received from some data source.
 ///
 /// It is decoupled from any data layout or format exposed by `unbound`
 /// and mostly exists only to make sure that all keys are provided by all the data sources.
@@ -31,7 +31,13 @@ pub struct Statistics {
     pub flags: Flags,
     pub query_opcodes: HashMap<Opcode, u64>,
     pub query_types: HashMap<Rtype, u64>,
+    // All other `Rtype` entries higher than `UB_STATS_QTYPE_NUM` (declared in `unbound.h`)
+    // are summed together into one metric value.
+    // As they are not representing any specific `Rtype`, storing them separately in here too.
+    pub query_types_other: u64,
     pub query_classes: HashMap<Class, u64>,
+    // See `query_types_other` comment for motivation to have this separate field.
+    pub query_classes_other: u64,
     pub answer_rcodes: HashMap<Rcode, u64>,
     pub query_aggressive: HashMap<Rcode, u64>,
     pub histogram: Histogram,

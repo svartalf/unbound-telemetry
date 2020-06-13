@@ -50,7 +50,7 @@ where
         socket.write_all(b"UBCT1 stats_noreset\n").await?;
         let mut buffer = String::new();
 
-        socket.read_to_string(&mut buffer).await?;
+        let _ = socket.read_to_string(&mut buffer).await?;
 
         Statistics::from_str(&buffer).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
     }
