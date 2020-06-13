@@ -150,6 +150,7 @@ impl Measurement {
             query_opcodes.set_with_label("opcode", opcode.as_str(), value)?;
         }
         let mut query_types = w.counter("query_types_total", "Total number of queries with a given query type");
+        query_types.set_with_label("type", "other", s.query_types_other)?;
         for (rtype, value) in s.query_types.iter() {
             query_types.set_with_label("type", rtype.as_str(), value)?;
         }
@@ -157,6 +158,7 @@ impl Measurement {
             "query_classes_total",
             "Total number of queries with a given query class",
         );
+        query_classes.set_with_label("class", "other", s.query_classes_other)?;
         for (class, value) in s.query_classes.iter() {
             query_classes.set_with_label("class", class.as_str(), value)?;
         }
