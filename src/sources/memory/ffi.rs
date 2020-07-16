@@ -82,7 +82,17 @@ pub struct ServerStats {
     pub unwanted_replies: libc::c_longlong,
     pub unwanted_queries: libc::c_longlong,
     pub tcp_accept_usage: libc::c_longlong,
+
+    // TODO: Field was renamed in unbound 1.10.1
+    //
+    // - /** answers served from expired cache */
+    // - long long zero_ttl_responses;
+    // + /** expired answers served from cache */
+    // + long long ans_expired;
+    //
+    // See https://github.com/NLnetLabs/unbound/commit/f7fe95ad7bae690781f9b78ca252a44fc072ca33
     pub zero_ttl_responses: libc::c_longlong,
+
     pub hist: [libc::c_longlong; UB_STATS_BUCKET_NUM],
     pub msg_cache_count: libc::c_longlong,
     pub rrset_cache_count: libc::c_longlong,

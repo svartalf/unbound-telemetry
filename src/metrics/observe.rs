@@ -214,12 +214,22 @@ impl Measurement {
             w.counter("prefetches_total", "Total number of cache prefetches performed")
                 .needs_header(add_header)
                 .set_with_label("thread", idx, thread.num_prefetch)?;
+
+            // Deprecated since unbound version 1.10.1
             w.counter(
                 "zero_ttl_responses_total",
                 "Total number of replies with ttl zero, because they served an expired cache entry.",
             )
             .needs_header(add_header)
             .set_with_label("thread", idx, thread.num_zero_ttl)?;
+            // Added since unbound version 1.10.1
+            w.counter(
+                "expired_responses_total",
+                "Total number of replies that served an expired cache entry.",
+            )
+            .needs_header(add_header)
+            .set_with_label("thread", idx, thread.num_zero_ttl)?;
+
             // TODO:!
             //            w.counter("recursive_replies_total","Total number of replies sent to queries that needed recursive processing")
             //                .set_with_label("thread", idx, thread.mesh_replies_sent)?;

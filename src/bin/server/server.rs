@@ -19,9 +19,6 @@ struct Context {
 }
 
 async fn handler(req: Request<Body>, context: Arc<Context>) -> hyper::Result<Response<Body>> {
-    // False positive on `&Method::GET`,
-    // see https://github.com/rust-lang/rust/issues/62411#issuecomment-510604193
-    #[allow(future_incompatible)]
     match (req.method(), req.uri().path()) {
         // Landing page
         (&Method::GET, "/") => Ok(Response::new(Body::from(INDEX_BODY))),

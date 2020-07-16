@@ -96,7 +96,13 @@ impl Parser {
             "num.cachehits" => thread.num_cache_hits.parse(value),
             "num.cachemiss" => thread.num_cache_miss.parse(value),
             "num.prefetch" => thread.num_prefetch.parse(value),
+
+            // Metric name before unbound version 1.10.1
             "num.zero_ttl" => thread.num_zero_ttl.parse(value),
+            // Metric name after unbound version 1.10.1
+            // see https://github.com/NLnetLabs/unbound/commit/f7fe95ad7bae690781f9b78ca252a44fc072ca33
+            "num.expired" => thread.num_zero_ttl.parse(value),
+
             "num.recursivereplies" => thread.num_recursive_replies.parse(value),
             "num.dnscrypt.crypted" => thread.num_dnscrypt_crypted.parse(value),
             "num.dnscrypt.cert" => thread.num_dnscrypt_cert.parse(value),
