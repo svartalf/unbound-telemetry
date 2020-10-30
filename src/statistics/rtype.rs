@@ -2,6 +2,7 @@ use crate::super_enum;
 
 super_enum! {
     enum Rtype {
+        Type0 => (0, "TYPE0"),
         A => (1, "A"),
         Ns => (2, "NS"),
         Md => (3, "MD"),

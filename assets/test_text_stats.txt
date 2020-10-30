@@ -110,6 +110,7 @@ histogram.032768.000000.to.065536.000000=0
 histogram.065536.000000.to.131072.000000=0
 histogram.131072.000000.to.262144.000000=0
 histogram.262144.000000.to.524288.000000=0
+num.query.type.TYPE0=1
 num.query.type.A=981
 num.query.type.PTR=4
 num.query.type.AAAA=353
