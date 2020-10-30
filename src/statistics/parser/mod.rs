@@ -51,13 +51,13 @@ impl Parser {
 
     pub fn feed_line(&mut self, line: &str) -> Result<(), ParseError> {
         let mut parts = line.splitn(2, '=');
-        let key = parts.next().ok_or_else(|| ParseError::MissingKey)?;
+        let key = parts.next().ok_or(ParseError::MissingKey)?;
         let value = parts
             .next()
             .ok_or_else(|| ParseError::MissingValue { key: key.into() })?;
         let mut key_parts = key.splitn(2, '.');
-        let key_prefix = key_parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
-        let key_postfix = key_parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
+        let key_prefix = key_parts.next().ok_or(ParseError::InvalidFormat)?;
+        let key_postfix = key_parts.next().ok_or(ParseError::InvalidFormat)?;
 
         match key_prefix {
             "total" => Self::thread(&mut self.stats.total, key_postfix, value)?,
@@ -138,7 +138,7 @@ impl Parser {
             "num.query.type.other" => stats.query_types_other.parse(value),
             key if key.starts_with("num.query.type.") => {
                 let mut parts = key.rsplitn(2, '.');
-                let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
+                let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
                 let code = Rtype::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
                 let _ = stats.query_types.insert(code, value);
@@ -147,7 +147,7 @@ impl Parser {
             "num.query.class.other" => stats.query_classes_other.parse(value),
             key if key.starts_with("num.query.class.") => {
                 let mut parts = key.rsplitn(2, '.');
-                let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
+                let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
                 let code = Class::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
                 let _ = stats.query_classes.insert(code, value);
@@ -155,7 +155,7 @@ impl Parser {
             }
             key if key.starts_with("num.query.opcode.") => {
                 let mut parts = key.rsplitn(2, '.');
-                let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
+                let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
                 let code = Opcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
                 let _ = stats.query_opcodes.insert(code, value);
@@ -180,7 +180,7 @@ impl Parser {
             "num.answer.rcode.nodata" => Ok(()),
             key if key.starts_with("num.answer.rcode.") => {
                 let mut parts = key.rsplitn(2, '.');
-                let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
+                let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
                 let code = Rcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
                 let _ = stats.answer_rcodes.insert(code, value);
@@ -192,7 +192,7 @@ impl Parser {
             "num.rrset.bogus" => stats.num_rrset_bogus.parse(value),
             key if key.starts_with("num.query.aggressive.") => {
                 let mut parts = key.rsplitn(2, '.');
-                let raw_code = parts.next().ok_or_else(|| ParseError::InvalidFormat)?;
+                let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
                 let code = Rcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
                 let value = value.parse::<u64>()?;
                 let _ = stats.query_aggressive.insert(code, value);
