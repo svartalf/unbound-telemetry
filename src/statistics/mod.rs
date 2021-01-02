@@ -28,6 +28,7 @@ pub struct Statistics {
     pub cache: Cache,
     pub modules: Modules,
     pub cache_count: CacheCounter,
+    pub http: Http,
     pub flags: Flags,
     pub query_opcodes: HashMap<Opcode, u64>,
     pub query_types: HashMap<Rtype, u64>,
@@ -50,6 +51,7 @@ pub struct Statistics {
     pub num_query_edns_present: u64,
     pub num_query_edns_do: u64,
     pub num_query_rate_limited: u64,
+    pub num_query_https: u64,
     pub num_answer_secure: u64,
     pub num_answer_bogus: u64,
     pub num_rrset_bogus: u64,
@@ -142,4 +144,10 @@ pub struct Flags {
     pub z: u64,
     pub ad: u64,
     pub cd: u64,
+}
+
+#[derive(Debug, Default, arbitrary::Arbitrary)]
+pub struct Http {
+    query_buffer: u64,
+    response_buffer: u64,
 }

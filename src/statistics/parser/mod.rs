@@ -135,6 +135,8 @@ impl Parser {
             "mem.cache.dnscrypt_shared_secret" => stats.cache.dnscrypt_shared_secret.parse(value),
             "mem.cache.dnscrypt_nonce" => stats.cache.dnscrypt_nonce.parse(value),
             "mem.streamwait" => stats.mem_streamwait.parse(value),
+            "mem.http.query_buffer" => stats.http.query_buffer.parse(value),
+            "mem.http.response_buffer" => stats.http.response_buffer.parse(value),
             "num.query.type.other" => stats.query_types_other.parse(value),
             key if key.starts_with("num.query.type.") => {
                 let mut parts = key.rsplitn(2, '.');
@@ -166,6 +168,7 @@ impl Parser {
             "num.query.tls" => stats.num_query_tls.parse(value),
             "num.query.tls.resume" => stats.num_query_tls_resume.parse(value),
             "num.query.ipv6" => stats.num_query_ipv6.parse(value),
+            "num.query.https" => stats.num_query_https.parse(value),
             "num.query.flags.QR" => stats.flags.qr.parse(value),
             "num.query.flags.AA" => stats.flags.aa.parse(value),
             "num.query.flags.TC" => stats.flags.tc.parse(value),
