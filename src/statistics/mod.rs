@@ -142,6 +142,6 @@ pub struct Flags {
 
 #[derive(Debug, Default)]
 pub struct Http {
-    query_buffer: u64,
-    response_buffer: u64,
+    pub query_buffer: u64,
+    pub response_buffer: u64,
 }

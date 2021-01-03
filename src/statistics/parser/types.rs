@@ -1,6 +1,7 @@
+use std::str::FromStr;
 use std::time::Duration;
 
-use domain::base::iana::Rcode;
+use domain::base::iana::{Class, Rcode};
 
 use crate::statistics::ParseError;
 
@@ -84,5 +85,17 @@ pub(crate) fn parse_rcode(s: &str) -> Result<Rcode, ParseError> {
         "NOTAUTH" => Ok(Rcode::NotAuth),
         "NOTZONE" => Ok(Rcode::NotZone),
         _ => Err(ParseError::ParseStr(s.to_owned())),
+    }
+}
+
+/// `Class` enum from `domain` crate uses `"*"` as a text representation for `Class::Any`
+/// enum member.
+///
+/// While this is obviously correct behavior, text representation of `unbound` statistics
+/// outputs `"ANY"` instead of `"*"`, which means we needs to handle this case separately.
+pub(crate) fn parse_class(s: &str) -> Result<Class, ParseError> {
+    match s {
+        "ANY" => Ok(Class::Any),
+        other => Class::from_str(other).map_err(|e| ParseError::ParseStr(format!("{}", e))),
     }
 }

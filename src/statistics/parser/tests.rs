@@ -61,6 +61,7 @@ fn test_parser() {
     assert_eq!(stats.num_query_tls, 0);
     assert_eq!(stats.num_query_tls_resume, 0);
     assert_eq!(stats.num_query_ipv6, 0);
+    assert_eq!(stats.num_query_https, 10);
 
     assert_eq!(stats.flags.qr, 0);
     assert_eq!(stats.flags.aa, 0);
@@ -80,6 +81,9 @@ fn test_parser() {
     assert_some_eq!(stats.answer_rcodes.get(&Rcode::NXDomain), &23);
     assert_some_eq!(stats.answer_rcodes.get(&Rcode::NotImp), &0);
     assert_some_eq!(stats.answer_rcodes.get(&Rcode::Refused), &0);
+
+    assert_eq!(stats.http.query_buffer, 1024);
+    assert_eq!(stats.http.response_buffer, 2048);
 
     assert_eq!(stats.threads.len(), 2);
 }

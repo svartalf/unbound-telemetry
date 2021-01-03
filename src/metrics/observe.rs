@@ -37,6 +37,10 @@ impl Measurement {
         // TODO:
         // .set_with_label("module", "ipsecmod", s.modules.ipsecmod)?
 
+        w.gauge("memory_http_bytes", "Memory in bytes in use by HTTP/2 queries")
+            .set_with_label("http", "query_buffer", s.http.query_buffer)?
+            .set_with_label("http", "response_buffer", s.http.response_buffer)?;
+
         // Mem buffers
         w.gauge(
             "memory_stream_wait_count",
@@ -69,6 +73,11 @@ impl Measurement {
             "Total number of queries that were made using IPv6 toward the server",
         )
         .set(s.num_query_ipv6)?;
+        w.counter(
+            "query_https_total",
+            "Total number of queries that were made using HTTPS",
+        )
+        .set(s.num_query_https)?;
 
         // Query EDNS numbers
         w.counter(
