@@ -1,13 +1,13 @@
 use std::num;
 use std::time::Duration;
 
-#[derive(Debug, arbitrary::Arbitrary)]
+#[derive(Debug)]
 struct InnerBucket {
     le: Duration,
     count: u64,
 }
 
-#[derive(Debug, arbitrary::Arbitrary)]
+#[derive(Debug)]
 pub struct Histogram {
     buckets: Vec<InnerBucket>,
     average: f64,

@@ -2,25 +2,19 @@ use std::collections::HashMap;
 use std::str;
 use std::time::Duration;
 
-mod class;
-mod histogram;
-mod opcode;
-mod parser;
-mod rcode;
-mod rtype;
+use domain::base::iana::{Class, Opcode, Rcode, Rtype};
 
-pub use self::class::Class;
+mod histogram;
+mod parser;
+
 pub use self::histogram::{Bucket, Histogram};
-pub use self::opcode::Opcode;
 pub use self::parser::ParseError;
-pub use self::rcode::Rcode;
-pub use self::rtype::Rtype;
 
 /// Statistics snapshot received from some data source.
 ///
 /// It is decoupled from any data layout or format exposed by `unbound`
 /// and mostly exists only to make sure that all keys are provided by all the data sources.
-#[derive(Debug, Default, arbitrary::Arbitrary)]
+#[derive(Debug, Default)]
 pub struct Statistics {
     pub total: Thread,
     pub threads: Vec<Thread>,
@@ -75,7 +69,7 @@ impl str::FromStr for Statistics {
 }
 
 /// Thread related data.
-#[derive(Debug, Default, arbitrary::Arbitrary)]
+#[derive(Debug, Default)]
 pub struct Thread {
     // Num
     pub num_queries: u64,
@@ -101,14 +95,14 @@ pub struct Thread {
     pub answer_rcode: HashMap<Rcode, u64>,
 }
 
-#[derive(Debug, Default, arbitrary::Arbitrary)]
+#[derive(Debug, Default)]
 pub struct Time {
     pub now: Duration,
     pub up: Duration,
     pub elapsed: Duration,
 }
 
-#[derive(Debug, Default, arbitrary::Arbitrary)]
+#[derive(Debug, Default)]
 pub struct Cache {
     pub rrset: u64,
     pub message: u64,
@@ -116,7 +110,7 @@ pub struct Cache {
     pub dnscrypt_nonce: u64,
 }
 
-#[derive(Debug, Default, arbitrary::Arbitrary)]
+#[derive(Debug, Default)]
 pub struct Modules {
     pub iterator: u64,
     pub validator: u64,
@@ -124,7 +118,7 @@ pub struct Modules {
     pub subnet: u64,
 }
 
-#[derive(Debug, Default, arbitrary::Arbitrary)]
+#[derive(Debug, Default)]
 pub struct CacheCounter {
     pub message: u64,
     pub rrset: u64,
@@ -134,7 +128,7 @@ pub struct CacheCounter {
     pub dnscrypt_nonce: u64,
 }
 
-#[derive(Debug, Default, arbitrary::Arbitrary)]
+#[derive(Debug, Default)]
 pub struct Flags {
     pub qr: u64,
     pub aa: u64,
@@ -146,7 +140,7 @@ pub struct Flags {
     pub cd: u64,
 }
 
-#[derive(Debug, Default, arbitrary::Arbitrary)]
+#[derive(Debug, Default)]
 pub struct Http {
     query_buffer: u64,
     response_buffer: u64,

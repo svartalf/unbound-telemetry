@@ -1,5 +1,7 @@
+use claim::assert_some_eq;
+
 use super::Parser;
-use crate::statistics::{Class, Opcode, Rcode, Rtype};
+use crate::statistics::{Class, Rcode, Rtype};
 
 static STATS: &str = include_str!("../../../assets/test_text_stats.txt");
 
@@ -24,11 +26,36 @@ fn test_parser() {
     assert_eq!(stats.cache.dnscrypt_shared_secret, 0);
     assert_eq!(stats.cache.dnscrypt_nonce, 0);
     assert_eq!(stats.mem_streamwait, 0);
-    assert_eq!(stats.query_types.get(&Rtype::A), Some(&981));
-    assert_eq!(stats.query_types.get(&Rtype::Ptr), Some(&4));
-    assert_eq!(stats.query_types.get(&Rtype::Aaaa), Some(&353));
-    assert_eq!(stats.query_classes.get(&Class::In), Some(&1338));
-    assert_eq!(stats.query_opcodes.get(&Opcode::Query), Some(&1338));
+
+    assert_some_eq!(stats.query_types.get(&Rtype::from_int(0)), &21838);
+    assert_some_eq!(stats.query_types.get(&Rtype::A), &4576639648);
+    assert_some_eq!(stats.query_types.get(&Rtype::Ns), &195714);
+    assert_some_eq!(stats.query_types.get(&Rtype::Mf), &1);
+    assert_some_eq!(stats.query_types.get(&Rtype::Cname), &223477);
+    assert_some_eq!(stats.query_types.get(&Rtype::Soa), &252841);
+    assert_some_eq!(stats.query_types.get(&Rtype::Mr), &2);
+    assert_some_eq!(stats.query_types.get(&Rtype::Null), &238628);
+    assert_some_eq!(stats.query_types.get(&Rtype::Wks), &230227);
+    assert_some_eq!(stats.query_types.get(&Rtype::Ptr), &8446520);
+    assert_some_eq!(stats.query_types.get(&Rtype::Hinfo), &231428);
+    assert_some_eq!(stats.query_types.get(&Rtype::Mx), &34204);
+    assert_some_eq!(stats.query_types.get(&Rtype::Txt), &510353);
+    assert_some_eq!(stats.query_types.get(&Rtype::Aaaa), &151992709);
+    assert_some_eq!(stats.query_types.get(&Rtype::Nxt), &3);
+    assert_some_eq!(stats.query_types.get(&Rtype::Srv), &1883446);
+    assert_some_eq!(stats.query_types.get(&Rtype::Naptr), &1578821);
+    assert_some_eq!(stats.query_types.get(&Rtype::Ds), &215);
+    assert_some_eq!(stats.query_types.get(&Rtype::Dnskey), &252);
+    assert_some_eq!(stats.query_types.get(&Rtype::from_int(65)), &140375490);
+    assert_some_eq!(stats.query_types.get(&Rtype::from_int(96)), &1);
+    assert_some_eq!(stats.query_types.get(&Rtype::Any), &82558);
+
+    assert_some_eq!(stats.query_classes.get(&Class::from_int(0)), &2);
+    assert_some_eq!(stats.query_classes.get(&Class::In), &4882932525);
+    assert_some_eq!(stats.query_classes.get(&Class::Ch), &1073);
+    assert_some_eq!(stats.query_classes.get(&Class::Hs), &3);
+    assert_some_eq!(stats.query_classes.get(&Class::from_int(5)), &1);
+
     assert_eq!(stats.num_query_tcp, 0);
     assert_eq!(stats.num_query_tcp_out, 2);
     assert_eq!(stats.num_query_tls, 0);
@@ -47,12 +74,12 @@ fn test_parser() {
     assert_eq!(stats.num_query_edns_present, 0);
     assert_eq!(stats.num_query_edns_do, 0);
 
-    assert_eq!(stats.answer_rcodes.get(&Rcode::NoError), Some(&1315));
-    assert_eq!(stats.answer_rcodes.get(&Rcode::FormErr), Some(&0));
-    assert_eq!(stats.answer_rcodes.get(&Rcode::ServFail), Some(&0));
-    assert_eq!(stats.answer_rcodes.get(&Rcode::NXDomain), Some(&23));
-    assert_eq!(stats.answer_rcodes.get(&Rcode::NotImpl), Some(&0));
-    assert_eq!(stats.answer_rcodes.get(&Rcode::Refused), Some(&0));
+    assert_some_eq!(stats.answer_rcodes.get(&Rcode::NoError), &1315);
+    assert_some_eq!(stats.answer_rcodes.get(&Rcode::FormErr), &0);
+    assert_some_eq!(stats.answer_rcodes.get(&Rcode::ServFail), &0);
+    assert_some_eq!(stats.answer_rcodes.get(&Rcode::NXDomain), &23);
+    assert_some_eq!(stats.answer_rcodes.get(&Rcode::NotImp), &0);
+    assert_some_eq!(stats.answer_rcodes.get(&Rcode::Refused), &0);
 
     assert_eq!(stats.threads.len(), 2);
 }

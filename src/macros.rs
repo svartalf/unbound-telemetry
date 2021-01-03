@@ -6,23 +6,23 @@ macro_rules! super_enum {
             $($variant:ident => ($int:expr, $str:expr),)*
         }
     ) => {
-        #[derive(Debug, PartialEq, Eq, Hash, arbitrary::Arbitrary)]
+        #[derive(Debug, PartialEq, Eq, Hash)]
         pub enum $name {
             $($variant,)*
         }
 
         impl $name {
-            pub fn as_str(&self) -> &'static str {
-                match self {
-                    $($name::$variant => $str,)*
-                }
-            }
-
-            pub fn as_u64(&self) -> u64 {
-                match self {
-                    $($name::$variant => $int,)*
-                }
-            }
+//            pub fn as_str(&self) -> &'static str {
+//                match self {
+//                    $($name::$variant => $str,)*
+//                }
+//            }
+//
+//            pub fn as_u64(&self) -> u64 {
+//                match self {
+//                    $($name::$variant => $int,)*
+//                }
+//            }
         }
 
         impl std::str::FromStr for $name {

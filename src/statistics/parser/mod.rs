@@ -3,9 +3,11 @@ use std::time::Duration;
 use std::u64;
 
 mod errors;
+mod types;
 
 pub use self::errors::ParseError;
-use super::{Class, Opcode, Rcode, Rtype, Statistics, Thread};
+use self::types::{parse_rcode, DurationExt, Field};
+use super::{Class, Opcode, Rtype, Statistics, Thread};
 use crate::statistics::Histogram;
 
 /// Parser for [`Statistics`] from the string representation.
@@ -184,7 +186,7 @@ impl Parser {
             key if key.starts_with("num.answer.rcode.") => {
                 let mut parts = key.rsplitn(2, '.');
                 let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
-                let code = Rcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
+                let code = parse_rcode(raw_code)?;
                 let value = value.parse::<u64>()?;
                 let _ = stats.answer_rcodes.insert(code, value);
                 Ok(())
@@ -196,7 +198,7 @@ impl Parser {
             key if key.starts_with("num.query.aggressive.") => {
                 let mut parts = key.rsplitn(2, '.');
                 let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
-                let code = Rcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
+                let code = parse_rcode(raw_code)?;
                 let value = value.parse::<u64>()?;
                 let _ = stats.query_aggressive.insert(code, value);
                 Ok(())
@@ -241,67 +243,6 @@ impl Default for Parser {
         }
     }
 }
-
-trait Field: Sized {
-    fn parse(&mut self, s: &str) -> Result<(), ParseError>;
-}
-
-impl Field for u64 {
-    fn parse(&mut self, s: &str) -> Result<(), ParseError> {
-        *self = s.parse().map_err(ParseError::from)?;
-        Ok(())
-    }
-}
-
-impl Field for f64 {
-    fn parse(&mut self, s: &str) -> Result<(), ParseError> {
-        *self = s.parse().map_err(ParseError::from)?;
-        Ok(())
-    }
-}
-
-impl Field for Duration {
-    fn parse(&mut self, s: &str) -> Result<(), ParseError> {
-        let value = s.parse::<f64>()?;
-
-        match Duration::checked_from_secs_f64(value) {
-            Some(duration) => {
-                *self = duration;
-                Ok(())
-            }
-            None => Err(ParseError::InvalidFormat),
-        }
-    }
-}
-
-pub trait DurationExt {
-    /// Following is a rip-off of the `Duration::from_secs_f64` method,
-    /// since there is is no `Duration::checked_from_secs_f64`
-    /// and we can't afford to panic
-    #[inline]
-    fn checked_from_secs_f64(secs: f64) -> Option<Duration> {
-        const NANOS_PER_SEC: u128 = 1_000_000_000;
-        const MAX_NANOS_F64: f64 = ((u64::MAX as u128 + 1) * NANOS_PER_SEC) as f64;
-
-        let nanos = secs * (NANOS_PER_SEC as f64);
-        if !nanos.is_finite() {
-            return None;
-        }
-        if nanos >= MAX_NANOS_F64 {
-            return None;
-        }
-        if nanos < 0.0 {
-            return None;
-        }
-        let nanos = nanos as u128;
-        Some(Duration::new(
-            (nanos / NANOS_PER_SEC) as u64,
-            (nanos % NANOS_PER_SEC) as u32,
-        ))
-    }
-}
-
-impl DurationExt for Duration {}
 
 #[cfg(test)]
 mod tests;

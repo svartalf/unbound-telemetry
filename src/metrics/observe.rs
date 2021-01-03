@@ -140,19 +140,19 @@ impl Measurement {
             "Total number of answers to queries, from cache or from recursion, by response code.",
         );
         for (rcode, value) in s.answer_rcodes.iter() {
-            answer_rcodes.set_with_label("rcode", rcode.as_str(), value)?;
+            answer_rcodes.set_with_label("rcode", rcode, value)?;
         }
         let mut query_opcodes = w.counter(
             "query_opcodes_total",
             "Total number of queries with a given query opcode",
         );
         for (opcode, value) in s.query_opcodes.iter() {
-            query_opcodes.set_with_label("opcode", opcode.as_str(), value)?;
+            query_opcodes.set_with_label("opcode", opcode, value)?;
         }
         let mut query_types = w.counter("query_types_total", "Total number of queries with a given query type");
         query_types.set_with_label("type", "other", s.query_types_other)?;
         for (rtype, value) in s.query_types.iter() {
-            query_types.set_with_label("type", rtype.as_str(), value)?;
+            query_types.set_with_label("type", rtype, value)?;
         }
         let mut query_classes = w.counter(
             "query_classes_total",
@@ -160,7 +160,7 @@ impl Measurement {
         );
         query_classes.set_with_label("class", "other", s.query_classes_other)?;
         for (class, value) in s.query_classes.iter() {
-            query_classes.set_with_label("class", class.as_str(), value)?;
+            query_classes.set_with_label("class", class, value)?;
         }
         w.counter(
             "query_flags_total",

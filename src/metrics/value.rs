@@ -2,6 +2,8 @@ use std::io;
 use std::io::Error;
 use std::time;
 
+use domain::base::iana::{Class, Opcode, Rcode, Rtype};
+
 pub trait MetricValue {
     fn write<T>(self, w: T) -> io::Result<()>
     where
@@ -58,6 +60,50 @@ impl MetricValue for &str {
         T: io::Write,
     {
         w.write_all(self.as_bytes())
+    }
+}
+
+impl MetricValue for Class {
+    fn write<T>(self, mut w: T) -> io::Result<()>
+    where
+        T: io::Write,
+    {
+        let str = format!("{}", self);
+
+        w.write(str.as_bytes()).map(|_| ())
+    }
+}
+
+impl MetricValue for Opcode {
+    fn write<T>(self, mut w: T) -> io::Result<()>
+    where
+        T: io::Write,
+    {
+        let str = format!("{}", self);
+
+        w.write(str.as_bytes()).map(|_| ())
+    }
+}
+
+impl MetricValue for Rcode {
+    fn write<T>(self, mut w: T) -> io::Result<()>
+    where
+        T: io::Write,
+    {
+        let str = format!("{}", self);
+
+        w.write(str.as_bytes()).map(|_| ())
+    }
+}
+
+impl MetricValue for Rtype {
+    fn write<T>(self, mut w: T) -> io::Result<()>
+    where
+        T: io::Write,
+    {
+        let str = format!("{}", self);
+
+        w.write(str.as_bytes()).map(|_| ())
     }
 }
 

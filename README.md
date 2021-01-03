@@ -4,7 +4,7 @@
 
 [![Coverage Status](https://github.com/svartalf/unbound-telemetry/workflows/Continuous%20integration/badge.svg)](https://github.com/svartalf/prometheus-unbound-exporter/actions?workflow=Continuous+integration)
 ![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)
-![Minimum rustc version](https://img.shields.io/badge/rustc-1.39+-green.svg)
+![Minimum rustc version](https://img.shields.io/badge/rustc-1.40+-green.svg)
 
 > [Unbound DNS resolver](https://www.nlnetlabs.nl/projects/unbound/about/) metrics exporter for [Prometheus](https://prometheus.io)
 
@@ -34,7 +34,7 @@ Note that communication via UDS socket or shared memory is not supported for Win
 
 ### From sources
 
-1. [Rust](https://www.rust-lang.org/) language compiler version >= 1.39 is required
+1. [Rust](https://www.rust-lang.org/) language compiler version >= 1.40 is required
 2. Clone the repository
 3. Run the following command
     ```bash
