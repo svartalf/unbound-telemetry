@@ -68,9 +68,16 @@ impl MetricValue for Class {
     where
         T: io::Write,
     {
-        let str = format!("{}", self);
+        let res = match self {
+            Class::Any => w.write(b"ANY"),
+            other => {
+                let str = format!("{}", other);
 
-        w.write(str.as_bytes()).map(|_| ())
+                w.write(str.as_bytes())
+            }
+        };
+
+        res.map(|_| ())
     }
 }
 

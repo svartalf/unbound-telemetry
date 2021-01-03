@@ -6,7 +6,7 @@ mod errors;
 mod types;
 
 pub use self::errors::ParseError;
-use self::types::{parse_rcode, parse_class, DurationExt, Field};
+use self::types::{parse_class, parse_rcode, DurationExt, Field};
 use super::{Opcode, Rtype, Statistics, Thread};
 use crate::statistics::Histogram;
 
