@@ -12,7 +12,7 @@ publish = false
 
 [dependencies]
 log = "^0.4"
-simple_logger = { version = "^1.4", default-features = false }
+simple_logger = { version = "^1.11", default-features = false }
 structopt = "^0.3"
 tokio = { version = "^0.2", features = ["macros", "signal", "uds", "dns"] }
 tokio-tls = "^0.3"
