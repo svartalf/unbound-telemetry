@@ -4,6 +4,7 @@ use std::time::Duration;
 use domain::base::iana::{Class, Rcode};
 
 use crate::statistics::ParseError;
+use domain::base::Rtype;
 
 pub(crate) trait Field: Sized {
     fn parse(&mut self, s: &str) -> Result<(), ParseError>;
@@ -97,5 +98,14 @@ pub(crate) fn parse_class(s: &str) -> Result<Class, ParseError> {
     match s {
         "ANY" => Ok(Class::Any),
         other => Class::from_str(other).map_err(|e| ParseError::ParseStr(format!("{}", e))),
+    }
+}
+
+/// `Rtype` enum from `domain` crate have some differences with query types `unbound` returns,
+/// so we need to map them.
+pub(crate) fn parse_rtype(s: &str) -> Result<Rtype, ParseError> {
+    match s {
+        "NSAP-PTR" => Ok(Rtype::Nsapptr),
+        other => Rtype::from_str(other).map_err(|e| ParseError::ParseStr(format!("{}", e))),
     }
 }

@@ -126,6 +126,7 @@ num.query.type.HINFO=231428
 num.query.type.MX=34204
 num.query.type.TXT=510353
 num.query.type.AAAA=151992709
+num.query.type.NSAP-PTR=1
 num.query.type.NXT=3
 num.query.type.SRV=1883446
 num.query.type.NAPTR=1578821

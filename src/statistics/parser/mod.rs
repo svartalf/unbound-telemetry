@@ -6,8 +6,8 @@ mod errors;
 mod types;
 
 pub use self::errors::ParseError;
-use self::types::{parse_class, parse_rcode, DurationExt, Field};
-use super::{Opcode, Rtype, Statistics, Thread};
+use self::types::{parse_class, parse_rcode, parse_rtype, DurationExt, Field};
+use super::{Opcode, Statistics, Thread};
 use crate::statistics::Histogram;
 
 /// Parser for [`Statistics`] from the string representation.
@@ -142,10 +142,10 @@ impl Parser {
             "num.query.type.other" => stats.query_types_other.parse(value),
             key if key.starts_with("num.query.type.") => {
                 let mut parts = key.rsplitn(2, '.');
-                let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
-                let code = Rtype::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
+                let raw_type = parts.next().ok_or(ParseError::InvalidFormat)?;
+                let type_ = parse_rtype(raw_type)?;
                 let value = value.parse::<u64>()?;
-                let _ = stats.query_types.insert(code, value);
+                let _ = stats.query_types.insert(type_, value);
                 Ok(())
             }
             "num.query.class.other" => stats.query_classes_other.parse(value),
