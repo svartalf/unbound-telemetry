@@ -19,8 +19,7 @@ RUN apt-get update && \
 
 FROM alpine:latest
 
-RUN apk add --update curl && \
-    rm -rf /var/cache/apk/*
+RUN apk --no-cache add --update curl
 
 COPY --from=build /root/target/x86_64-unknown-linux-musl/release/unbound-telemetry /bin
 
