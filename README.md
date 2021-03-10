@@ -76,6 +76,17 @@ and run the following command:
 $ unbound-telemetry shm --help
 ```
 
+### Install systemd service
+
+Copy unbound-telemetry.service to /etc/systemd/system/unbound-telemetry.service
+and run the following commands:
+
+```bash
+$ systemctl daemon-reload
+$ systemctl enable unbound-telemetry
+$ systemctl start unbound-telemetry
+```
+
 ### Monitoring
 
 `/healthcheck` URL can be used for automated monitoring;
