@@ -46,7 +46,7 @@ Note that communication via UDS socket or shared memory is not supported for Win
 
 HTTP interface is available at http://0.0.0.0:9167 by default and can be changed via CLI arguments.
 
-### TLS socket
+### TCP socket
 
 First of all, enable `remote-control` option in the [`unbound.conf`](https://nlnetlabs.nl/documentation/unbound/unbound.conf/),
 configure control interface address and TLS if needed.
@@ -54,7 +54,7 @@ configure control interface address and TLS if needed.
 Run the following command to see possible flags and options:
 
 ```bash
-$ unbound-telemetry tls --help
+$ unbound-telemetry tcp --help
 ```
 
 ### Unix domain socket
