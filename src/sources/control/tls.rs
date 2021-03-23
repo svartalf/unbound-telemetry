@@ -5,10 +5,11 @@ use std::io;
 use std::path::Path;
 
 use native_tls::{Certificate, Identity, TlsConnector as NativeTlsConnector};
+use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt};
 use tokio::net::TcpStream;
 use tokio_tls::{TlsConnector, TlsStream};
 
-use super::RemoteControlTransport;
+use super::{RemoteControlSocket, RemoteControlTransport};
 
 pub struct TlsTransport {
     connector: TlsConnector,
@@ -52,5 +53,15 @@ impl RemoteControlTransport for TlsTransport {
             .map_err(|e| io::Error::new(io::ErrorKind::ConnectionRefused, e))?;
 
         Ok(stream)
+    }
+}
+
+#[async_trait::async_trait]
+impl<T> RemoteControlSocket for TlsStream<T>
+where
+    T: AsyncRead + AsyncWrite + Send + Unpin,
+{
+    async fn close(mut self) -> io::Result<()> {
+        self.shutdown().await
     }
 }

@@ -17,8 +17,13 @@ pub use self::tls::TlsTransport;
 pub use self::uds::UdsTransport;
 
 #[async_trait::async_trait]
+pub trait RemoteControlSocket: AsyncRead + AsyncWrite + Send + Unpin {
+    async fn close(mut self) -> io::Result<()>;
+}
+
+#[async_trait::async_trait]
 pub trait RemoteControlTransport: Sized + Send + Sync {
-    type Socket: AsyncRead + AsyncWrite + Send + Unpin;
+    type Socket: RemoteControlSocket;
 
     async fn connect(&self) -> io::Result<Self::Socket>;
 }
@@ -51,6 +56,7 @@ where
         let mut buffer = String::new();
 
         let _ = socket.read_to_string(&mut buffer).await?;
+        socket.close().await?;
 
         Statistics::from_str(&buffer).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
     }
