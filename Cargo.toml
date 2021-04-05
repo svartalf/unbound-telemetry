@@ -21,7 +21,7 @@ async-trait = "^0.1"
 itoa = "^0.4"
 dtoa = "^0.4"
 native-tls = "^0.2"
-domain = "0.5.3"
+domain = "0.6.1"
 
 [target.'cfg(unix)'.dependencies]
 libc = "^0.2"  # Used for shm access
