@@ -1,0 +1,2 @@
+#!/bin/sh -eu
+exec unbound-telemetry tcp -b [::]:9167
