@@ -16,7 +16,7 @@ simple_logger = { version = "^1.4", default-features = false }
 structopt = "^0.3"
 tokio = { version = "^0.2", features = ["macros", "signal", "uds", "dns"] }
 tokio-tls = "^0.3"
-hyper = { version = "^0.13", default-features = false, features = ["runtime"] }
+hyper = { version = "^0.14", default-features = false, features = ["runtime"] }
 async-trait = "^0.1"
 itoa = "^0.4"
 dtoa = "^0.4"
