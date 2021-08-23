@@ -29,7 +29,7 @@ openssl = "^0.10"
 
 [dev-dependencies]
 approx = "^0.3"
-claim = "~0.4"
+claim = "~0.5"
 
 [features]
 # Used for Docker builds only
