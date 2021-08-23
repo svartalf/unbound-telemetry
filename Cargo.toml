@@ -28,7 +28,7 @@ libc = "^0.2"  # Used for shm access
 openssl = "^0.10"
 
 [dev-dependencies]
-approx = "^0.3"
+approx = "^0.5"
 claim = "~0.4"
 
 [features]
