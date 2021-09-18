@@ -23,7 +23,7 @@ RUN apk --no-cache add --update curl
 
 COPY --from=build /root/target/x86_64-unknown-linux-musl/release/unbound-telemetry /bin
 
-EXPOSE 80
+EXPOSE 80 9167
 
 HEALTHCHECK --timeout=1s CMD /usr/bin/curl --silent --fail http://127.0.0.1:80/healthcheck || exit 1
 
