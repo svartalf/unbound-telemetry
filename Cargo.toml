@@ -20,16 +20,16 @@ hyper = { version = "^0.13", default-features = false, features = ["runtime"] }
 async-trait = "^0.1"
 itoa = "^0.4"
 dtoa = "^0.4"
-native-tls = "^0.2"
-domain = "0.5.3"
+native-tls = "=0.2.3"
+domain = "0.6.1"
 
 [target.'cfg(unix)'.dependencies]
 libc = "^0.2"  # Used for shm access
 openssl = "^0.10"
 
 [dev-dependencies]
-approx = "^0.3"
-claim = "~0.4"
+approx = "^0.5"
+claim = "^0.5"
 
 [features]
 # Used for Docker builds only
