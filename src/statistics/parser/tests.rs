@@ -1,9 +1,10 @@
-use claim::assert_some_eq;
+use claim::{assert_some_eq, assert_ok};
 
 use super::Parser;
 use crate::statistics::{Class, Rcode, Rtype};
 
 static STATS: &str = include_str!("../../../assets/test_text_stats.txt");
+static STATS_1_13_2: &str = include_str!("../../../assets/test_text_stats_1_13_2.txt");
 
 #[test]
 #[allow(clippy::cognitive_complexity)]
@@ -86,4 +87,12 @@ fn test_parser() {
     assert_eq!(stats.http.response_buffer, 2048);
 
     assert_eq!(stats.threads.len(), 2);
+}
+
+
+#[test]
+fn test_parser_1_13_2_format() {
+    let parser = Parser::new();
+
+    assert_ok!(parser.parse(STATS_1_13_2));
 }

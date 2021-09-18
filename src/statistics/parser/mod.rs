@@ -143,26 +143,35 @@ impl Parser {
             key if key.starts_with("num.query.type.") => {
                 let mut parts = key.rsplitn(2, '.');
                 let raw_type = parts.next().ok_or(ParseError::InvalidFormat)?;
-                let type_ = parse_rtype(raw_type)?;
-                let value = value.parse::<u64>()?;
-                let _ = stats.query_types.insert(type_, value);
+                // TODO: Unknown rtypes are ignored for now, see #101
+                if let Ok(type_) = parse_rtype(raw_type) {
+                    let value = value.parse::<u64>()?;
+                    let _ = stats.query_types.insert(type_, value);
+                }
+
                 Ok(())
             }
             "num.query.class.other" => stats.query_classes_other.parse(value),
             key if key.starts_with("num.query.class.") => {
                 let mut parts = key.rsplitn(2, '.');
                 let raw_class = parts.next().ok_or(ParseError::InvalidFormat)?;
-                let class = parse_class(raw_class)?;
-                let value = value.parse::<u64>()?;
-                let _ = stats.query_classes.insert(class, value);
+                // TODO: Unknown classes are ignored for now, see #101
+                if let Ok(class) = parse_class(raw_class) {
+                    let value = value.parse::<u64>()?;
+                    let _ = stats.query_classes.insert(class, value);
+                }
+
                 Ok(())
             }
             key if key.starts_with("num.query.opcode.") => {
                 let mut parts = key.rsplitn(2, '.');
                 let raw_code = parts.next().ok_or(ParseError::InvalidFormat)?;
-                let code = Opcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()))?;
-                let value = value.parse::<u64>()?;
-                let _ = stats.query_opcodes.insert(code, value);
+                // TODO: Unknown opcodes are ignored for now, see #101
+                let code = Opcode::from_str(raw_code).map_err(|_| ParseError::ParseStr(raw_code.into()));
+                if let Ok(code) = code {
+                    let value = value.parse::<u64>()?;
+                    let _ = stats.query_opcodes.insert(code, value);
+                }
                 Ok(())
             }
             "num.query.tcp" => stats.num_query_tcp.parse(value),
