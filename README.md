@@ -34,7 +34,7 @@ Note that communication via UDS socket or shared memory is not supported for Win
 
 ### From sources
 
-1. [Rust](https://www.rust-lang.org/) language compiler version >= 1.42 is required
+1. [Rust](https://www.rust-lang.org/) language compiler version >= 1.46 is required
 2. Clone the repository
 3. Run the following command
     ```bash

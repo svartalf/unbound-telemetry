@@ -1,4 +1,4 @@
-use claim::{assert_some_eq, assert_ok};
+use claim::{assert_ok, assert_some_eq};
 
 use super::Parser;
 use crate::statistics::{Class, Rcode, Rtype};
@@ -88,7 +88,6 @@ fn test_parser() {
 
     assert_eq!(stats.threads.len(), 2);
 }
-
 
 #[test]
 fn test_parser_1_13_2_format() {

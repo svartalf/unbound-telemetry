@@ -6,8 +6,7 @@
     future_incompatible,
     nonstandard_style,
     dead_code,
-    deprecated,
-    broken_intra_doc_links
+    deprecated
 )]
 #![warn(
     trivial_casts,
