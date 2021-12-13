@@ -133,9 +133,9 @@ dependencies = [
 
 [[package]]
 name = "dtoa"
-version = "0.4.8"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56899898ce76aaf4a0f24d914c97ea6ed976d42fec6ad33fcbb0a1103e07b2b0"
+checksum = "756915ca7a124d0cf62370920c03f819973f78b81275d195c618b03d33f98b82"
 
 [[package]]
 name = "fnv"
