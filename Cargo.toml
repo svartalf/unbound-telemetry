@@ -19,7 +19,7 @@ tokio-tls = "^0.3"
 hyper = { version = "^0.13", default-features = false, features = ["runtime"] }
 async-trait = "^0.1"
 itoa = "^0.4"
-dtoa = "^0.4"
+dtoa = "^1.0"
 native-tls = "=0.2.3"
 domain = "0.6.1"
 
