@@ -8,6 +8,10 @@
 
 > [Unbound DNS resolver](https://www.nlnetlabs.nl/projects/unbound/about/) metrics exporter for [Prometheus](https://prometheus.io)
 
+## Deprecation notice
+
+This repo is archived and will not be maintained anymore. You can use the [`unbound_exporter`](https://github.com/letsencrypt/unbound_exporter) by Let's Encrypt instead.
+
 ## Features
 
  * Communicates with `unbound` via TLS, UDS socket or shared memory
