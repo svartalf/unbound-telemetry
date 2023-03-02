@@ -1,0 +1,10 @@
+[Unit]
+Description=Prometheus exporter for unbound
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/unbound-telemetry tcp --control-interface 127.0.0.1:8953 --server-cert-file /etc/unbound/unbound_server.pem --control-cert-file /etc/unbound/unbound_control.pem --control-key-file /etc/unbound/unbound_control.key
+
+[Install]
+WantedBy=multi-user.target
